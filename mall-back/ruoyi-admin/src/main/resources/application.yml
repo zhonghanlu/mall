@@ -1,0 +1,136 @@
+# 项目相关配置
+ruoyi:
+  # 名称
+  name: RuoYi
+  # 版本
+  version: 3.8.9
+  # 版权年份
+  copyrightYear: 2025
+  # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
+  profile: /Users/zhonghanlu/Downloads/ruoyiFile
+  # 获取ip地址开关
+  addressEnabled: false
+  # 验证码类型 math 数字计算 char 字符验证
+  captchaType: math
+
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为8080
+  port: 8080
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # 连接数满后的排队数，默认为100
+    accept-count: 1000
+    threads:
+      # tomcat最大线程数，默认为200
+      max: 800
+      # Tomcat启动初始化的线程数，默认值10
+      min-spare: 100
+
+# 日志配置
+logging:
+  level:
+    com.ruoyi: debug
+    org.springframework: warn
+
+# 用户配置
+user:
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 5
+    # 密码锁定时间（默认10分钟）
+    lockTime: 10
+
+# Spring配置
+spring:
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  profiles:
+    active: druid
+  # 文件上传
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 10MB
+      # 设置总上传的文件大小
+      max-request-size: 20MB
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+  # redis 配置
+  redis:
+    # 地址
+    host: localhost
+    # 端口，默认为6379
+    port: 6379
+    # 数据库索引
+    database: 0
+    # 密码
+    password:
+    # 连接超时时间
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期（默认30分钟）
+  expireTime: 30
+
+# MyBatis配置
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: com.ruoyi.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+# PageHelper分页插件
+pagehelper:
+  helperDialect: mysql
+  supportMethodsArguments: true
+  params: count=countSql
+
+# Swagger配置
+swagger:
+  # 是否开启swagger
+  enabled: true
+  # 请求前缀
+  pathMapping: /dev-api
+
+# 防止XSS攻击
+xss:
+  # 过滤开关
+  enabled: true
+  # 排除链接（多个用逗号分隔）
+  excludes: /system/notice
+  # 匹配链接
+  urlPatterns: /system/*,/monitor/*,/tool/*
+
+
+alipay:
+  appId: 9021000144667590
+  appPrivateKey: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCcHycQ915Kx3KQJW3oT63/Gjj80zO1K3CimDKph+vm6l93zyV8L1zEkEwCCk7AdbmHq9X/72OR1Xi/aL182igrWfXK66J1dvcQ9WIxVKevGaOY82pNdSB+GO3latrgLyoXDiPjoTpjzfJcjUfgz6gUhWkMr54j6HhLkHwHBNOTLDL8bEhBlWRlAGFUDoeW+s5UXqiojoFCMJxHtqZ8Ug1EWEccwVxq8uGpyOXVe0Pg8sIEwvYz0GiC3tqfZSSgi3pDFK3aBBaPKxg0uPTsdyTDkLJan8OHt477quXjLxr6pSDgKdNDMI9swRW30fgbkc8Uve+mUR9o07ogoNcKjqBbAgMBAAECggEAUsMY/J+F9vJgQxX0e7Cxtoh6KVz1Dlem8CrqwIBziAg679J6NqkM7o7oHDTGprRB1DA9091d1VNrHV0zBlrH7KNV72qWxtp4Ax9yHGCaO/LFjTGM6t7qiK5Cftn0id+22l3+nI892ua0Umf68Kxkl+xZUgZPOQ3lp3lCpp3iYyO0w2Wmx6YBTE1y0Dp9qHNWVtLvGBIA4Ktkw1iaXSL0r0P3XSclVD7sb1YhCIo4vpRcdl47sB4FVSz3/O9cwNzcBpAkfGSmQgnUgNRshFzgEkYiXeaVk+fiA7KBXoHhcpGHHhVCr9zMm4yUr9ey9pPSaKKMjU/jmStMmjrBF6900QKBgQD1RcPZax9s96VXZ1WlDcRS+5nYnJPLTMNsqBeRlm/JU8I9Zypqn7xB5zmOgr9o7iL86g8Oqj/+T7lbMdfA83g4AIh0DB0bkp7FmwUMy48OEq5600gB2a8CLawVCJN4WWue7REWbY4WTpl2jXjW+kqlx0UNT1mkdKWSoYZXMR+FfwKBgQCi8zIA43uTDL9rnrkqbo+EqNOfyi8ynaKNuth/+v4XLmdj2Tw0OAfyQcg1ke60Ms6go5s0WFgQVpZU/El0ANRiJApeWT+5Gyvg3leCYIgWV/Fvi2c8BkTet5dLOWc3Ih+wunVxl8HFf4eLYo2SvLDVpqAPxonyWMygCRuBrGwrJQKBgQDkMB/hqxP1oQCmrHC1unUobwPWzvWBcs1tzYT/4eHmgJJ55f1EbZAMED8wItxJlyPeATQ5BJO82hcsjNaZoOn70CMjNBHwkRw949dy6/8PrLm/c8nOTuPPNwaeGvh4Q1ko5o27O/mxLzb/YOdHulywlw/bLjPMGOnh3XzKqd0VqQKBgQCFqbN0oyT0hFpobvQ4aCR1jv64beK1RDTYyVFZ+Yp/fWL1tnX555QtFeSifKgvTBXOEyX2lBj4ne4GnEOsUhnkvud6aP8qWa1ucTObEI/QtCapdtIhnIrVngcOf3G4+dbA4tH/cZpS5L9MiHTUzs7HEjztc9An6MtA4vebMNIxuQKBgQCfNEQXKEiqofo5di8/c3rUGiM+awR2L0u6TEpeNw9r6weO6W4KpflgA4cz9CjL0aQx4ZVtTYYldjBSNOJQRkbGHL+eefwevFdnvkf03pQ82x6ff5Pl0PxhozGFr2tszwfkwQFnAWF78VI5yvWMqusX0j4uWRghvIqfGHe8Z2zYhA==
+  alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApMcQ1MaZaEvLfF7+2+2qYMfGOVokuyxe4sM232dm9QkbSd1yixRVRb8ETUg24FoJC1rOdHYA1sh5GecGpidWCCNfpx1lfkJ1bCemo7qewtHN+T1ctXci42ZcwqwdV2ZrhPho9uPP8qngpYlGpUOXmKUTR9U9wMc9EYT3l5bltp8Yep6uI+q6kHet5D/aqATQfIGJHBhsFjHI6P1Z+xetk+tDthM8c7U4kMnD9kTYZZFsC9SJQxifkroc2495uMVJFQP7rZYOz3s7RWf563PUvRRH+p2Vu+8WO5lmzyOzCJmwzwoFGOOQ+Aoun1EZy4Ae0prQviaog8KHh7+9mN1HVwIDAQAB
+  notifyUrl: http://hf7bfx.natappfree.cc/alipay/notify

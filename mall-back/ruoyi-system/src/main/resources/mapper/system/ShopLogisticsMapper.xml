@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ShopLogisticsMapper">
+
+    <resultMap type="ShopLogistics" id="ShopLogisticsResult">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="logisticsName" column="logistics_name"/>
+        <result property="logisticsTime" column="logistics_time"/>
+        <result property="logisticsPrice" column="logistics_price"/>
+        <result property="logisticsStatus" column="logistics_status"/>
+        <result property="logisticsAddress" column="logistics_address"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectShopLogisticsVo">
+        select id,
+               order_id,
+               logistics_name,
+               logistics_time,
+               logistics_price,
+               logistics_status,
+               logistics_address,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from shop_logistics
+    </sql>
+
+    <select id="selectShopLogisticsList" parameterType="ShopLogistics" resultMap="ShopLogisticsResult">
+        <include refid="selectShopLogisticsVo"/>
+        <where>
+            <if test="orderId != null ">and order_id = #{orderId}</if>
+            <if test="logisticsName != null  and logisticsName != ''">and logistics_name like concat('%',
+                #{logisticsName}, '%')
+            </if>
+            <if test="logisticsStatus != null ">and logistics_status = #{logisticsStatus}</if>
+            <if test="logisticsTime != null ">and logistics_time = #{logisticsTime}</if>
+            <if test="logisticsPrice != null ">and logistics_price = #{logisticsPrice}</if>
+        </where>
+    </select>
+
+    <select id="selectShopLogisticsById" parameterType="Long" resultMap="ShopLogisticsResult">
+        <include refid="selectShopLogisticsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertShopLogistics" parameterType="ShopLogistics">
+        insert into shop_logistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="logisticsName != null">logistics_name,</if>
+            <if test="logisticsTime != null">logistics_time,</if>
+            <if test="logisticsPrice != null">logistics_price,</if>
+            <if test="logisticsStatus != null">logistics_status,</if>
+            <if test="logisticsAddress != null">logistics_address,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="logisticsName != null">#{logisticsName},</if>
+            <if test="logisticsTime != null">#{logisticsTime},</if>
+            <if test="logisticsPrice != null">#{logisticsPrice},</if>
+            <if test="logisticsStatus != null">#{logisticsStatus},</if>
+            <if test="logisticsAddress != null">#{logisticsAddress},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateShopLogistics" parameterType="ShopLogistics">
+        update shop_logistics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="logisticsName != null">logistics_name = #{logisticsName},</if>
+            <if test="logisticsTime != null">logistics_time = #{logisticsTime},</if>
+            <if test="logisticsPrice != null">logistics_price = #{logisticsPrice},</if>
+            <if test="logisticsStatus != null">logistics_status = #{logisticsStatus},</if>
+            <if test="logisticsAddress != null">logistics_address = #{logisticsAddress},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShopLogisticsById" parameterType="Long">
+        delete
+        from shop_logistics
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteShopLogisticsByIds" parameterType="String">
+        delete from shop_logistics where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

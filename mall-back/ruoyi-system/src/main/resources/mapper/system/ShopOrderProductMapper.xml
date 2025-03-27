@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ShopOrderProductMapper">
+
+    <resultMap type="ShopOrderProduct" id="ShopOrderProductResult">
+        <result property="id" column="id"/>
+        <result property="productId" column="product_id"/>
+        <result property="orderId" column="order_id"/>
+    </resultMap>
+
+    <sql id="selectShopOrderProductVo">
+        select id, product_id, order_id
+        from shop_order_product
+    </sql>
+
+    <select id="selectShopOrderProductList" parameterType="ShopOrderProduct" resultMap="ShopOrderProductResult">
+        <include refid="selectShopOrderProductVo"/>
+        <where>
+            <if test="productId != null ">and product_id = #{productId}</if>
+            <if test="orderId != null ">and order_id = #{orderId}</if>
+        </where>
+    </select>
+
+    <select id="selectShopOrderProductById" parameterType="Long" resultMap="ShopOrderProductResult">
+        <include refid="selectShopOrderProductVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectShopProductDetailByOrderId" resultType="com.ruoyi.system.domain.vo.ShopSkuSpuProductVo">
+        SELECT sssp.id,
+               sssp.product_name,
+               sssp.product_actual_price,
+               sop.quantity
+        FROM shop_order_product sop
+                 LEFT JOIN shop_sku_spu_product sssp ON sop.product_id = sssp.id
+        WHERE sop.order_id = #{id}
+    </select>
+
+    <insert id="insertShopOrderProduct" parameterType="ShopOrderProduct">
+        insert into shop_order_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="orderId != null">order_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="orderId != null">#{orderId},</if>
+        </trim>
+    </insert>
+    <insert id="batchInsertShopOrderProduct">
+        INSERT INTO shop_order_product (id, product_id, order_id, quantity) VALUES
+        <foreach item="item" index="index" collection="shopOrderProductList" separator=",">
+            (#{item.id}, #{item.productId}, #{item.orderId},#{item.quantity})
+        </foreach>
+    </insert>
+
+    <update id="updateShopOrderProduct" parameterType="ShopOrderProduct">
+        update shop_order_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShopOrderProductById" parameterType="Long">
+        delete
+        from shop_order_product
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteShopOrderProductByIds" parameterType="String">
+        delete from shop_order_product where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

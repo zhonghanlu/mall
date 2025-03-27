@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ShopProductLabelMapper">
+
+    <resultMap type="ShopProductLabel" id="ShopProductLabelResult">
+        <result property="id" column="id"/>
+        <result property="labelId" column="label_id"/>
+        <result property="productId" column="product_id"/>
+    </resultMap>
+
+    <sql id="selectShopProductLabelVo">
+        select id, label_id, product_id
+        from shop_product_label
+    </sql>
+
+    <select id="selectShopProductLabelList" parameterType="ShopProductLabel" resultMap="ShopProductLabelResult">
+        <include refid="selectShopProductLabelVo"/>
+        <where>
+            <if test="labelId != null ">and label_id = #{labelId}</if>
+            <if test="productId != null ">and product_id = #{productId}</if>
+        </where>
+    </select>
+
+    <select id="selectShopProductLabelById" parameterType="Long" resultMap="ShopProductLabelResult">
+        <include refid="selectShopProductLabelVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectLabelIdList" resultType="java.lang.Long">
+        SELECT label_id
+        FROM shop_product_label
+        WHERE product_id = #{productId}
+    </select>
+    <select id="selectLabelListByProductIdList" resultType="com.ruoyi.system.domain.ShopProductLabel">
+        SELECT spl.product_id,sl.id AS labelId, sl.label_name
+        FROM shop_product_label spl
+        LEFT JOIN shop_label sl ON spl.label_id = sl.id
+        WHERE spl.product_id IN
+        <foreach collection="productIdList" item="productId" separator="," open="(" close=")">
+            #{productId}
+        </foreach>
+    </select>
+
+    <insert id="insertShopProductLabel" parameterType="ShopProductLabel">
+        insert into shop_product_label
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="labelId != null">label_id,</if>
+            <if test="productId != null">product_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="labelId != null">#{labelId},</if>
+            <if test="productId != null">#{productId},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertShopProductLabel">
+        INSERT INTO shop_product_label (id,
+        label_id,
+        product_id)
+        VALUES
+        <foreach collection="shopProductLabelList" item="item" separator=",">
+            (#{item.id},
+            #{item.labelId},
+            #{item.productId})
+        </foreach>
+    </insert>
+
+    <update id="updateShopProductLabel" parameterType="ShopProductLabel">
+        update shop_product_label
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="labelId != null">label_id = #{labelId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShopProductLabelById" parameterType="Long">
+        delete
+        from shop_product_label
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteShopProductLabelByIds" parameterType="String">
+        delete from shop_product_label where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteLabelByProductId">
+        DELETE
+        FROM shop_product_label
+        WHERE product_id = #{productId}
+    </delete>
+</mapper>

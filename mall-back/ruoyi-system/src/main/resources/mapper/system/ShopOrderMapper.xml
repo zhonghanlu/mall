@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ShopOrderMapper">
+
+    <resultMap type="ShopOrder" id="ShopOrderResult">
+        <result property="id" column="id"/>
+        <result property="placeOrderName" column="place_order_name"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="orderAddress" column="order_address"/>
+        <result property="orderPhone" column="order_phone"/>
+        <result property="orderTime" column="order_time"/>
+        <result property="payNo" column="pay_no"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="orderTotalPrice" column="order_total_price"/>
+        <result property="productTotalPrice" column="productTotalPrice"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectShopOrderVo">
+        select id,
+               place_order_name,
+               order_status,
+               order_address,
+               order_phone,
+               order_time,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from shop_order
+    </sql>
+
+    <select id="selectShopOrderList" parameterType="ShopOrder" resultMap="ShopOrderResult">
+        SELECT
+        so.id,
+        so.place_order_name,
+        so.order_status,
+        so.order_address,
+        so.order_phone,
+        so.order_time,
+        so.pay_no,
+        so.pay_time,
+        so.order_total_price,
+        SUM(sssp.product_actual_price * sop.quantity) AS productTotalPrice
+        FROM shop_order so
+        LEFT JOIN shop_order_product sop ON so.id = sop.order_id
+        LEFT JOIN shop_sku_spu_product sssp ON sop.product_id = sssp.id
+        <where>
+            so.del_flag = '0'
+            <if test="placeOrderName != null  and placeOrderName != ''">
+                AND so.place_order_name LIKE CONCAT('%', #{placeOrderName}, '%')
+            </if>
+            <if test="orderStatus != null ">
+                AND so.order_status = #{orderStatus}
+            </if>
+            <if test="params.beginTime != null ">
+                AND so.order_time &gt;= #{params.beginTime}
+            </if>
+            <if test="params.endTime != null ">
+                AND so.order_time &lt;= #{params.endTime}
+            </if>
+            <if test="params.createBy != null ">
+                AND so.create_by = #{params.createBy}
+            </if>
+        </where>
+        GROUP BY so.id,
+        so.place_order_name,
+        so.order_status,
+        so.order_address,
+        so.order_phone,
+        so.order_time,
+        so.pay_no,
+        so.pay_time,
+        so.order_total_price
+        ORDER BY so.order_time DESC
+    </select>
+
+    <select id="selectShopOrderById" parameterType="Long" resultMap="ShopOrderResult">
+        SELECT
+        so.id,
+        so.place_order_name,
+        so.order_status,
+        so.order_address,
+        so.order_phone,
+        so.order_time,
+        SUM(sssp.product_actual_price * sop.quantity) AS productTotalPrice
+        FROM shop_order so
+        LEFT JOIN shop_order_product sop ON so.id = sop.order_id
+        LEFT JOIN shop_sku_spu_product sssp ON sop.product_id = sssp.id
+        <where>
+            so.del_flag = '0'
+            AND so.id = #{id}
+        </where>
+        GROUP BY so.id,
+        so.place_order_name,
+        so.order_status,
+        so.order_address,
+        so.order_phone,
+        so.order_time
+        LIMIT 1
+    </select>
+
+    <insert id="insertShopOrder" parameterType="ShopOrder">
+        insert into shop_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="placeOrderName != null">place_order_name,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="orderAddress != null">order_address,</if>
+            <if test="orderPhone != null">order_phone,</if>
+            <if test="orderTime != null">order_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="placeOrderName != null">#{placeOrderName},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="orderAddress != null">#{orderAddress},</if>
+            <if test="orderPhone != null">#{orderPhone},</if>
+            <if test="orderTime != null">#{orderTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateShopOrder" parameterType="ShopOrder">
+        update shop_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="placeOrderName != null">place_order_name = #{placeOrderName},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="orderAddress != null">order_address = #{orderAddress},</if>
+            <if test="orderPhone != null">order_phone = #{orderPhone},</if>
+            <if test="orderTime != null">order_time = #{orderTime},</if>
+
+            <if test="orderTotalPrice != null">order_total_price = #{orderTotalPrice},</if>
+            <if test="payNo != null">pay_no = #{payNo},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShopOrderById" parameterType="Long">
+        delete
+        from shop_order
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteShopOrderByIds" parameterType="String">
+        delete from shop_order where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
